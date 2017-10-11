@@ -10,7 +10,7 @@ select *
 from t as of scn :scn;
 --или
 select * 
-from t as of timestamp to_timestamp('2017-08-28 01:00:00', 'YYYY-MM-DD HH:MI:SS');
+from t as of timestamp to_timestamp('2017-08-28 01:00:00', 'YYYY-MM-DD HH24:MI:SS');
 --Восстановление
 --1. разрешение на перемещение строк в БД
 alter table t enable row movement;
