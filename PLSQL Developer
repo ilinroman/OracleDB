@@ -1,0 +1,35 @@
+----------------------------------
+-- Мониторинг сессий и запросов --
+----------------------------------
+--SQL Monitor
+select m.sql_text, dbms_sqltune.report_sql_monitor(sql_id => m.sql_id, type => 'HTML', report_level => 'ALL') AS report
+from  v$sql_monitor m
+where m.sid = :sid and m.session_serial# = :serial#
+order by 1
+
+--Eplain Plan
+SELECT lpad(' ', 2 * level) || pt.operation || ' ' || pt.options || ' ' ||
+       pt.object_name "Query Plan",
+       pt.cost,
+       pt.cardinality,
+       pt.bytes,
+       pt.cpu_cost,
+       pt.io_cost,
+       pt.access_predicates,
+       pt.filter_predicates,
+       pt.qblock_name,
+       pt.temp_space
+FROM (select *
+from v$sql_plan
+where sql_id = :sql_id and child_number = :sql_child_number) pt
+CONNECT BY PRIOR pt.id = pt.parent_id
+START WITH pt.id = 0;
+
+--Params
+select c.NAME,
+       c.LAST_CAPTURED,
+       c.DATATYPE_STRING,
+       c.VALUE_STRING
+  from v$sql_bind_capture c
+where c.CHILD_NUMBER = :sql_child_number
+   and c.SQL_ID = :sql_id
