@@ -36,7 +36,7 @@ where a.taddr = b.addr
 and a.sid in ( select sid
 from v$px_session
 where qcsid = 258)
-order by sid;
+order by sid; 
 
 --Тип и количество параллельных действий
 select name, value from v$statname a, v$mystat b
