@@ -98,6 +98,13 @@ begin
 */
 end;
 
+-- Реальный план курсора (тянется из кэша курсоров)
+select s.sql_id, plan_table_output
+from v$sql s,
+table(dbms_xplan.display_cursor(s.sql_id,
+                                s.child_number, 'basic +PEEKED_BINDS')) t
+where s.sql_text like 'insert /*+ parallel(2) */%';
+
 ----------------------------
 -- УПРАВЛЕНИЕ СТАТИСТИКОЙ --
 ----------------------------
