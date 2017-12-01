@@ -98,12 +98,20 @@ begin
 */
 end;
 
--- Реальный план курсора (тянется из кэша курсоров)
-select s.sql_id, plan_table_output
-from v$sql s,
-table(dbms_xplan.display_cursor(s.sql_id,
-                                s.child_number, 'basic +PEEKED_BINDS')) t
-where s.sql_text like 'insert /*+ parallel(2) */%';
+--Мониторинг
+--1.выполнить запрос с хинтом monitor
+select /*+ monitor */ ...;
+--2.получить sql_id запроса
+select s.sql_id
+from v$sql s
+where s.sql_text like 'select /*+ monitor */ row_id%';
+--3.открыть монитор
+select dbms_sqltune.report_sql_monitor(
+            sql_id       => '<sql_id>', --sql_id, полученный в п.2
+            type         => 'HTML'/*'TEXT'*/, --вид представления данных
+            report_level => 'ALL'
+         ) as report
+  from   dual;
 
 ----------------------------
 -- УПРАВЛЕНИЕ СТАТИСТИКОЙ --
