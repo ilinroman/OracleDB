@@ -21,8 +21,6 @@ flashback table t to scn :scn;
 -- ПАРАЛЛЕЛИЗМ --
 -----------------
 --SID текущего сеанса
-select sid from v$mystat where rownum = 1;
---или
 select sys_context('userenv','sid') from dual;
 
 --Проверка активации PDML (параллельное выполнение операции DML - INSERT, UPDATE, DELETE. MERGE)
