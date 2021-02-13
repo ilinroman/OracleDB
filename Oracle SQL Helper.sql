@@ -22,6 +22,8 @@ flashback table t to scn :scn;
 -----------------
 --SID текущего сеанса
 select sys_context('userenv','sid') from dual;
+--или
+select sys_context('userenv','sid') from dual;
 
 --Проверка активации PDML (параллельное выполнение операции DML - INSERT, UPDATE, DELETE. MERGE)
 select pdml_enabled from v$session where sid= sys_context('userenv','sid');
